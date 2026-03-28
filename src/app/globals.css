@@ -1,26 +1,911 @@
 @import "tailwindcss";
 
+/* ─── Design Tokens — WHITE MODE ─────────────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --blue:    #0066FF;
+  --blue-10: rgba(0,102,255,0.10);
+  --blue-20: rgba(0,102,255,0.20);
+  --blue-30: rgba(0,102,255,0.30);
+  --violet:  #7c3aed;
+  --orange:  #ff6b35;
+  --green:   #00c853;
+  --red:     #ff3b5c;
+  --text:    #0a0a0a;
+  --muted:   rgba(0,0,0,0.62);
+  --muted-2: rgba(0,0,0,0.42);
+  --bg:      #ffffff;
+  --bg-2:    #f5f5f7;
+  --bg-3:    #eef2ff;
+  --border:  rgba(0,0,0,0.08);
+  --shadow:  0 4px 24px rgba(0,0,66,0.08);
+  --shadow-blue: 0 0 40px rgba(0,102,255,0.25), 0 8px 32px rgba(0,102,255,0.15);
+  --font-sans: var(--font-inter), 'Inter', system-ui, sans-serif;
+  --font-mono: var(--font-mono), 'JetBrains Mono', monospace;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* ─── Base Reset ─────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  overflow: hidden;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ─── ASCII Background ───────────────────────────────────────── */
+.ascii-bg {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none; overflow: hidden;
+  font-family: 'JetBrains Mono', var(--font-mono), monospace;
+  font-size: 13px; line-height: 1.65;
+  color: rgba(0,0,0,0.055);
+  white-space: pre; word-break: break-all;
+  user-select: none;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+.ascii-bg-inner {
+  animation: asciiScroll 90s linear infinite;
+  will-change: transform;
+}
+
+/* ─── Reveal.js Core Overrides ───────────────────────────────── */
+.reveal-viewport { background: #ffffff !important; }
+
+.reveal {
+  font-family: var(--font-sans) !important;
+  font-size: 34px;
+  color: var(--text);
+}
+
+.reveal .slides { text-align: left; }
+
+.reveal .slides section {
+  width: 100%; height: 100%;
+  padding: 60px 80px;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  overflow: hidden;
+  background: transparent;
+}
+
+.reveal h1, .reveal h2, .reveal h3 {
+  font-family: var(--font-sans) !important;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  line-height: 1.05;
+  color: var(--text);
+  text-transform: none;
+  margin: 0;
+}
+
+.reveal p, .reveal li { font-weight: 400; }
+
+.reveal .fragment { opacity: 0; transition: none; }
+.reveal .fragment.visible { opacity: 1; }
+
+/* ─── Keyframes ──────────────────────────────────────────────── */
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInLeft {
+  from { opacity: 0; transform: translateX(-50px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeInRight {
+  from { opacity: 0; transform: translateX(50px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes neonPulseBlue {
+  0%, 100% { text-shadow: 0 0 10px var(--blue), 0 0 30px rgba(0,102,255,0.4); }
+  50%       { text-shadow: 0 0 4px var(--blue); }
+}
+
+@keyframes bluePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,102,255,0.4); }
+  50%       { box-shadow: 0 0 0 8px rgba(0,102,255,0); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: scale(0.82) translateX(-60px); }
+  20%       { transform: scale(0.82) translateX(-68px); }
+  40%       { transform: scale(0.82) translateX(-54px); }
+  60%       { transform: scale(0.82) translateX(-65px); }
+  80%       { transform: scale(0.82) translateX(-57px); }
+}
+
+@keyframes tombstoneDrop {
+  0%   { transform: translateY(-120px) rotate(-5deg); opacity: 0; }
+  60%  { transform: translateY(12px) rotate(1deg); opacity: 1; }
+  80%  { transform: translateY(-5px) rotate(-0.5deg); }
+  100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+}
+
+@keyframes rocketLaunch {
+  0%   { transform: translateY(0) scale(1); opacity: 1; }
+  30%  { transform: translateY(-20px) scale(1.05); opacity: 1; }
+  100% { transform: translateY(-300px) scale(0.6); opacity: 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50%       { transform: translateY(-8px); }
+}
+
+@keyframes gradientShift {
+  0%   { background-position: 0% 50%; }
+  50%  { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+@keyframes drawLine {
+  from { stroke-dashoffset: 1000; }
+  to   { stroke-dashoffset: 0; }
+}
+
+@keyframes scaleIn {
+  from { transform: scale(0.5); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+@keyframes cardReveal {
+  from { transform: translateY(30px) scale(0.95); opacity: 0; }
+  to   { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+@keyframes bounceIn {
+  0%   { transform: scale(0); opacity: 0; }
+  60%  { transform: scale(1.1); opacity: 1; }
+  80%  { transform: scale(0.95); }
+  100% { transform: scale(1); }
+}
+
+@keyframes typewriterWidth {
+  from { width: 0; }
+  to   { width: 100%; }
+}
+
+@keyframes blinkCursor {
+  0%, 100% { border-color: transparent; }
+  50%       { border-color: var(--blue); }
+}
+
+@keyframes bubbleFloat {
+  0%   { transform: translate(0, 0) scale(1); }
+  100% { transform: translate(var(--tx, 16px), var(--ty, 10px)) scale(var(--ts, 1.03)); }
+}
+
+@keyframes impactReveal {
+  0%   { transform: scale(0.35); opacity: 0; letter-spacing: 0.25em; }
+  55%  { transform: scale(1.04); opacity: 1; letter-spacing: -0.04em; }
+  100% { transform: scale(1); letter-spacing: -0.04em; }
+}
+
+@keyframes panelSlideIn {
+  from { transform: translateX(60px); opacity: 0; }
+  to   { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes quoteLineReveal {
+  from { opacity: 0; transform: translateX(-20px); border-left-color: transparent; }
+  to   { opacity: 1; transform: translateX(0); border-left-color: var(--blue); }
+}
+
+@keyframes pulseCta {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255,255,255,0.5); }
+  50%       { box-shadow: 0 0 0 12px rgba(255,255,255,0); }
+}
+
+@keyframes progressFill {
+  from { width: 0%; }
+  to   { width: var(--progress-width, 100%); }
+}
+
+@keyframes asciiScroll {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+
+@keyframes panelEnter {
+  from { opacity: 0; transform: translateX(56px) scale(0.96); }
+  to   { opacity: 1; transform: translateX(0) scale(1); }
+}
+
+@keyframes learnCardIn {
+  from { opacity: 0; transform: translateY(32px) scale(0.94); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ─── Utility Animation Classes ──────────────────────────────── */
+.anim-fadeInUp    { animation: fadeInUp 0.7s cubic-bezier(0.16,1,0.3,1) both; }
+.anim-fadeInLeft  { animation: fadeInLeft 0.7s cubic-bezier(0.16,1,0.3,1) both; }
+.anim-fadeInRight { animation: fadeInRight 0.7s cubic-bezier(0.16,1,0.3,1) both; }
+.anim-fadeIn      { animation: fadeIn 0.8s ease both; }
+.anim-scaleIn     { animation: scaleIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both; }
+.anim-float       { animation: float 3s ease-in-out infinite; }
+.anim-bounceIn    { animation: bounceIn 0.6s cubic-bezier(0.34,1.56,0.64,1) both; }
+
+.delay-100 { animation-delay: 0.1s; }
+.delay-200 { animation-delay: 0.2s; }
+.delay-300 { animation-delay: 0.3s; }
+.delay-400 { animation-delay: 0.4s; }
+.delay-500 { animation-delay: 0.5s; }
+.delay-600 { animation-delay: 0.6s; }
+.delay-700 { animation-delay: 0.7s; }
+.delay-800 { animation-delay: 0.8s; }
+.delay-900 { animation-delay: 0.9s; }
+.delay-1000{ animation-delay: 1.0s; }
+.delay-1200{ animation-delay: 1.2s; }
+.delay-1500{ animation-delay: 1.5s; }
+
+/* ─── Placeholder ────────────────────────────────────────────── */
+.placeholder-img {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 12px;
+  color: var(--muted);
+  font-size: 14px;
+  font-family: var(--font-mono);
+  border: 1px dashed var(--border);
+  background: var(--bg-2);
+  border-radius: 12px;
+}
+.placeholder-img .placeholder-icon { font-size: 48px; opacity: 0.4; }
+
+/* ─── Slide 1 — THE HOOK ─────────────────────────────────────── */
+.slide-hook {
+  position: relative;
+  padding: 0 !important;
+  justify-content: flex-end !important;
+  background: #fff !important;
+}
+
+.slide-hook canvas {
+  position: absolute; inset: 0; z-index: 0;
+}
+
+.slide-hook .split-left,
+.slide-hook .split-right {
+  position: absolute; top: 0; bottom: 0; width: 50%;
+  overflow: hidden; z-index: 2;
+}
+.slide-hook .split-left  { left: 0; }
+.slide-hook .split-right { right: 0; }
+
+.hook-divider {
+  position: absolute; top: 0; bottom: 0; left: 50%;
+  width: 2px;
+  background: linear-gradient(to bottom, transparent, var(--blue), transparent);
+  z-index: 5;
+  animation: neonPulseBlue 2s ease-in-out infinite;
+}
+
+.slide-hook .hook-content {
+  position: absolute; bottom: 0; left: 0; right: 0;
+  z-index: 10; padding: 60px 80px;
+  background: linear-gradient(to top, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.85) 60%, transparent 100%);
+}
+
+.slide-hook .hook-tag {
+  font-family: var(--font-mono); font-size: 14px;
+  color: var(--blue); letter-spacing: 0.18em;
+  text-transform: uppercase; margin-bottom: 16px;
+}
+
+.slide-hook .hook-title {
+  font-size: clamp(56px, 6vw, 96px) !important;
+  font-weight: 900 !important; line-height: 1 !important;
+  margin-bottom: 16px !important; color: var(--text) !important;
+  overflow: hidden; white-space: nowrap;
+  border-right: 3px solid var(--blue);
+  animation: typewriterWidth 1.5s steps(40, end) 0.3s both,
+             blinkCursor 0.8s step-end infinite 1.8s;
+  width: 0;
+}
+
+.slide-hook .hook-subtitle {
+  font-size: clamp(22px, 2.5vw, 34px);
+  color: var(--muted); font-weight: 400; margin-bottom: 32px;
+}
+
+.slide-hook .hook-footer {
+  font-family: var(--font-mono); font-size: 15px;
+  color: var(--orange); letter-spacing: 0.08em;
+}
+
+/* ─── Slide 2 — YOUR STORY ────────────────────────────────────── */
+.slide-story .story-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 60px; align-items: center; height: 100%;
+}
+
+.slide-story .story-img-wrap {
+  height: 360px; border-radius: 16px; overflow: hidden;
+  border: 1px solid var(--border); box-shadow: var(--shadow);
+}
+
+.device-frame {
+  background: var(--bg-2); border-radius: 28px; padding: 14px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow); height: 500px; overflow: hidden;
+}
+.device-frame .device-notch {
+  width: 80px; height: 6px; background: var(--border);
+  border-radius: 3px; margin: 0 auto 12px;
+}
+.device-frame .device-screen {
+  border-radius: 16px; overflow: hidden; height: calc(100% - 30px);
+  background: var(--bg-3);
+}
+
+.slide-story .story-content .slide-num {
+  font-family: var(--font-mono); font-size: 13px;
+  color: var(--blue); letter-spacing: 0.2em; margin-bottom: 16px;
+}
+
+.slide-story .story-title {
+  font-size: clamp(42px, 4.5vw, 72px) !important; margin-bottom: 28px !important;
+}
+
+.slide-story .story-body {
+  font-size: 26px; color: var(--muted); line-height: 1.6; margin-bottom: 32px;
+}
+
+.plot-twist-badge {
+  display: inline-block; background: var(--violet); color: #fff;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.15em;
+  padding: 4px 12px; border-radius: 100px; margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.plot-twist-text {
+  font-size: clamp(22px, 2.5vw, 32px); font-weight: 700;
+  color: var(--blue); line-height: 1.3;
+}
+
+/* ─── Slide 3 — PARADIGM SHIFT ──────────────────────────────── */
+.slide-paradigm { }
+
+.slide-paradigm .paradigm-title {
+  font-size: clamp(36px, 3.8vw, 60px) !important; margin-bottom: 36px !important;
+}
+
+.paradigm-cols {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 24px; margin-bottom: 40px;
+}
+
+.paradigm-card {
+  border-radius: 16px; padding: 28px;
+}
+
+.paradigm-card.academia {
+  background: var(--bg-2); border: 1px solid var(--border);
+}
+
+.paradigm-card.mercado {
+  background: var(--bg-3); border: 2px solid var(--blue-30);
+  box-shadow: var(--shadow-blue);
+}
+
+.paradigm-card-label {
+  font-size: 13px; font-weight: 700; letter-spacing: 0.15em;
+  text-transform: uppercase; margin-bottom: 16px;
+}
+
+.paradigm-card.academia .paradigm-card-label { color: var(--muted-2); }
+.paradigm-card.mercado  .paradigm-card-label { color: var(--blue); }
+
+.paradigm-item {
+  display: flex; align-items: flex-start; gap: 10px;
+  margin-bottom: 12px; font-size: 20px; line-height: 1.4;
+}
+
+.paradigm-card.academia .paradigm-item { color: var(--muted); }
+.paradigm-card.mercado  .paradigm-item { color: var(--text); }
+.paradigm-card.academia .item-bullet   { color: var(--muted-2); }
+.paradigm-card.mercado  .item-bullet   { color: var(--blue); }
+
+/* ─── Slide 3 stat hero ─────────────────────────────────────── */
+.stat-hero {
+  text-align: center; padding: 20px 0;
+}
+
+.stat-counter-big {
+  font-family: var(--font-mono);
+  font-size: clamp(100px, 12vw, 160px);
+  font-weight: 900; line-height: 1; color: var(--blue);
+  animation: neonPulseBlue 3s ease-in-out infinite;
+  display: block;
+}
+
+.stat-hero-label {
+  font-size: 28px; color: var(--muted); margin-top: 8px;
+}
+
+.stat-hero-sub {
+  font-size: 18px; color: var(--muted-2); margin-top: 4px;
+  font-family: var(--font-mono);
+}
+
+/* ─── Slide 4 — UNFAIR ADVANTAGE ─────────────────────────────── */
+.slide-advantage { }
+
+.slide-advantage .adv-title {
+  font-size: clamp(36px, 3.8vw, 60px) !important; margin-bottom: 12px !important;
+}
+
+.adv-subtitle { font-size: 22px; color: var(--muted); margin-bottom: 52px; }
+
+.timeline {
+  display: flex; align-items: flex-start;
+  justify-content: space-between; position: relative; padding: 0 40px;
+}
+
+.timeline-node {
+  display: flex; flex-direction: column; align-items: center;
+  gap: 14px; position: relative; z-index: 2; width: 240px;
+}
+
+.timeline-icon {
+  width: 96px; height: 96px; border-radius: 50%;
+  background: var(--bg-2); border: 2px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 40px; transition: all 0.4s ease;
+}
+
+.timeline-node.active .timeline-icon {
+  border-color: var(--blue);
+  box-shadow: var(--shadow-blue);
+  animation: float 3s ease-in-out infinite;
+}
+
+.timeline-label { font-size: 24px; font-weight: 700; color: var(--text); }
+
+.timeline-metric {
+  font-family: var(--font-mono); font-size: 15px;
+  color: var(--blue); text-align: center; line-height: 1.4;
+}
+
+.timeline-desc {
+  font-size: 15px; color: var(--muted);
+  text-align: center; line-height: 1.4; max-width: 180px;
+}
+
+.adv-quote {
+  margin-top: 48px; font-size: 24px; font-weight: 700;
+  color: var(--orange); font-style: italic;
+}
+
+/* ─── Slide 5 — THE CEMETERY ─────────────────────────────────── */
+.slide-cemetery { position: relative; overflow: hidden; }
+
+.cemetery-title { font-size: clamp(36px, 3.8vw, 60px) !important; margin-bottom: 8px !important; }
+.cemetery-subtitle { font-size: 20px; color: var(--muted); margin-bottom: 40px; }
+
+.tombstones { display: flex; gap: 32px; align-items: flex-end; margin-bottom: 40px; }
+
+.tombstone {
+  flex: 1; background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: 60px 60px 8px 8px; padding: 28px 20px;
+  text-align: center; position: relative; opacity: 0;
+  box-shadow: var(--shadow);
+}
+
+.tombstone.animate {
+  animation: tombstoneDrop 0.8s cubic-bezier(0.34,1.2,0.64,1) forwards;
+}
+/* tombstone timing is now click-controlled via fragment triggers */
+
+.tombstone-skull  { font-size: 40px; margin-bottom: 12px; }
+.tombstone-name   { font-size: 20px; font-weight: 700; color: var(--muted);
+  text-decoration: line-through; text-decoration-color: var(--red); margin-bottom: 8px; }
+.tombstone-cause  { font-size: 13px; color: var(--red); font-family: var(--font-mono); margin-bottom: 12px; }
+.tombstone-lesson { font-size: 15px; color: var(--muted); line-height: 1.4; }
+
+.rocket-wrap { opacity: 0; display: flex; flex-direction: column; align-items: center; }
+.rocket-wrap.animate {
+  opacity: 1;
+  animation: rocketLaunch 1.5s cubic-bezier(0.4,0,0.2,1) 1.2s both;
+}
+.rocket-emoji { font-size: 48px; }
+
+.cemetery-lesson {
+  font-size: 22px; color: var(--orange); font-weight: 600; font-style: italic;
+}
+
+/* ─── Slide 6 — LEARN BY DOING ───────────────────────────────── */
+.slide-learn { background: transparent !important; justify-content: center !important; }
+
+.learn-title {
+  font-size: clamp(44px, 4.8vw, 74px) !important;
+  margin-bottom: 12px !important;
+}
+
+.learn-sub {
+  font-size: 22px; color: var(--muted); margin-bottom: 52px;
+  font-style: italic;
+}
+
+.learn-grid {
+  display: flex; gap: 24px; align-items: stretch;
+  margin-bottom: 48px;
+}
+
+.learn-card {
+  flex: 1; background: var(--bg-2);
+  border: 1px solid var(--border); border-radius: 20px;
+  padding: 32px 24px; display: flex; flex-direction: column;
+  align-items: center; text-align: center; gap: 16px;
+  box-shadow: var(--shadow);
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+  cursor: default;
+}
+
+.learn-card:hover {
+  border-color: var(--blue);
+  box-shadow: var(--shadow-blue);
+  transform: translateY(-6px);
+}
+
+/* fragment hidden/visible handled by reveal; animation on .visible */
+.reveal .learn-card.fragment {
+  opacity: 0;
+  transform: translateY(32px) scale(0.94);
+}
+.reveal .learn-card.fragment.visible {
+  animation: learnCardIn 0.55s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+.learn-emoji {
+  font-size: 52px; line-height: 1;
+}
+
+.learn-tool-badge {
+  font-family: var(--font-mono);
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase;
+  padding: 5px 16px; border-radius: 100px;
+  background: var(--blue-10); border: 1px solid var(--blue-30);
+  color: var(--blue);
+}
+
+.learn-event {
+  font-size: 17px; color: var(--muted); line-height: 1.4;
+  font-style: italic;
+}
+
+.learn-lesson {
+  font-size: 20px; font-weight: 800; color: var(--text); line-height: 1.3;
+}
+
+.learn-lesson span { color: var(--blue); }
+
+.learn-punch {
+  font-size: clamp(28px, 3vw, 46px);
+  font-weight: 900; color: var(--blue);
+  text-align: center; line-height: 1.2;
+  padding: 20px 0;
+}
+
+/* ─── Slide 7 (was 8) — TOOLBOX (Bubbles) ───────────────────── */
+.slide-toolbox { position: relative; }
+
+.toolbox-title { font-size: clamp(32px, 3.5vw, 56px) !important; margin-bottom: 16px !important; }
+
+.toolbox-subtitle { font-size: 18px; color: var(--muted); margin-bottom: 32px; }
+
+.bubble-field {
+  position: relative; width: 100%; height: 480px;
+}
+
+.tool-bubble {
+  position: absolute; border-radius: 50%;
+  background: var(--bg-3);
+  border: 2px solid var(--blue-20);
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 6px;
+  box-shadow: 0 4px 20px rgba(0,102,255,0.08);
+  animation: bubbleFloat var(--dur, 5s) ease-in-out infinite alternate,
+             cardReveal 0.6s cubic-bezier(0.16,1,0.3,1) var(--delay, 0s) both;
+  transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  cursor: default;
+}
+
+.tool-bubble:hover {
+  border-color: var(--blue);
+  box-shadow: var(--shadow-blue);
+  transform: scale(1.08) !important;
+  animation-play-state: paused;
+  z-index: 10;
+}
+
+.bubble-logo {
+  width: 52px; height: 52px;
+  background: var(--bg);
+  border-radius: 12px;
+  border: 1px dashed var(--blue-20);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; color: var(--muted);
+  font-family: var(--font-mono); font-size: 10px;
+  letter-spacing: 0;
+}
+
+.bubble-name {
+  font-size: 13px; font-weight: 700; color: var(--text);
+  text-align: center; line-height: 1.2; padding: 0 8px;
+}
+
+/* ─── Slide 8 (was 9) — AI CO-PILOT ─────────────────────────── */
+.slide-ai { }
+
+.slide-ai .ai-title {
+  font-size: clamp(32px, 3.8vw, 60px) !important; margin-bottom: 40px !important;
+}
+
+.ai-stage {
+  display: flex; gap: 32px; align-items: center;
+}
+
+/* Phase 1 — "Antes" full-center */
+.before-center-stage {
+  flex: 1; padding: 40px 48px;
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: 20px; transition: all 0.7s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: var(--shadow);
+}
+
+.before-center-stage.dying {
+  filter: grayscale(1);
+  opacity: 0.25;
+  transform: scale(0.82) translateX(-50px);
+  animation: shake 0.5s ease forwards;
+  pointer-events: none;
+}
+
+.ba-label {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.2em;
+  text-transform: uppercase; margin-bottom: 16px;
+}
+
+.before-center-stage .ba-label { color: var(--muted-2); }
+
+.ba-main-big {
+  font-size: clamp(40px, 4.5vw, 64px);
+  font-weight: 900; color: var(--text); line-height: 1.1;
+  margin-bottom: 16px;
+}
+
+.ba-sub {
+  font-size: 20px; color: var(--muted); line-height: 1.5;
+}
+
+/* Phase 2 — "Ahora" slides in */
+.after-reveal {
+  flex: 1; padding: 40px 48px;
+  background: var(--bg-3); border: 2px solid var(--blue);
+  border-radius: 20px;
+  opacity: 0; transform: translateX(80px) scale(0.95);
+  transition: all 0.8s cubic-bezier(0.16,1,0.3,1) 0.3s;
+  box-shadow: var(--shadow-blue);
+}
+
+.after-reveal.visible {
+  opacity: 1; transform: translateX(0) scale(1);
+}
+
+.after-reveal .ba-label { color: var(--blue); }
+.after-reveal .ba-main-big { color: var(--blue); }
+
+.ba-tools { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 20px; }
+
+.ba-tool-tag {
+  background: var(--blue-10); border: 1px solid var(--blue-30);
+  border-radius: 100px; padding: 6px 16px;
+  font-size: 14px; font-family: var(--font-mono); color: var(--blue);
+}
+
+.ai-arrow {
+  flex-shrink: 0; opacity: 0; transition: opacity 0.3s 0.2s;
+}
+.ai-arrow.visible { opacity: 1; }
+
+.ai-conclusion {
+  margin-top: 32px;
+}
+.ai-conclusion strong { color: var(--blue); }
+
+/* ─── Slide 9 (was 10) — NOORA DEMO ─────────────────────────── */
+.slide-demo { }
+
+.slide-demo .demo-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;
+}
+
+.demo-title { font-size: clamp(32px, 3.8vw, 58px) !important; margin-bottom: 16px !important; }
+
+.demo-subtitle { font-size: 20px; color: var(--muted); margin-bottom: 32px; font-style: italic; }
+
+.demo-stack { display: flex; gap: 12px; margin-bottom: 32px; flex-wrap: wrap; }
+
+.stack-badge {
+  background: rgba(124,58,237,0.08); border: 1px solid rgba(124,58,237,0.3);
+  border-radius: 100px; padding: 8px 20px;
+  font-family: var(--font-mono); font-size: 15px; font-weight: 700; color: var(--violet);
+  animation: bounceIn 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+
+.demo-metric {
+  background: rgba(0,200,83,0.06); border: 1px solid rgba(0,200,83,0.25);
+  border-radius: 16px; padding: 20px 28px;
+}
+.demo-metric-label { font-size: 14px; color: var(--muted); font-family: var(--font-mono); margin-bottom: 8px; }
+.demo-metric-value { font-family: var(--font-mono); font-size: 48px; font-weight: 700; color: var(--green); }
+
+/* ─── Slide 10 (was 11) — TREASURE MAP (Premium) ─────────────── */
+.slide-treasure { }
+
+.slide-treasure .treasure-title {
+  font-size: clamp(32px, 3.8vw, 58px) !important; margin-bottom: 48px !important;
+}
+
+.treasure-premium {
+  display: flex; gap: 24px; align-items: flex-start;
+}
+
+.treasure-item {
+  flex: 1; display: flex; flex-direction: column; align-items: center;
+  text-align: center; gap: 14px;
+  padding: 28px 16px;
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: 20px; cursor: default;
+  transition: all 0.3s ease;
+  animation: cardReveal 0.6s cubic-bezier(0.16,1,0.3,1) both;
+  box-shadow: var(--shadow);
+}
+
+.treasure-item:hover {
+  border-color: var(--blue); background: var(--bg-3);
+  box-shadow: var(--shadow-blue); transform: translateY(-8px);
+}
+
+.treasure-logo-zone {
+  width: 100px; height: 100px;
+  background: #fff; border-radius: 20px;
+  border: 1px dashed var(--blue-20);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 36px; box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+}
+
+.treasure-item-name { font-size: 18px; font-weight: 800; color: var(--text); }
+
+.treasure-item-desc { font-size: 14px; color: var(--muted); line-height: 1.4; max-width: 160px; }
+
+.treasure-item-tag {
+  font-family: var(--font-mono); font-size: 11px; color: var(--blue);
+  background: var(--blue-10); border: 1px solid var(--blue-20);
+  padding: 3px 12px; border-radius: 100px;
+}
+
+/* ─── Slide 11 (was 12) — PLAYBOOK (Horizontal) ──────────────── */
+.slide-playbook { }
+
+.playbook-title { font-size: clamp(32px, 3.5vw, 54px) !important; margin-bottom: 8px !important; }
+.playbook-subtitle { font-size: 18px; color: var(--muted); margin-bottom: 36px; }
+
+.playbook-panels {
+  display: flex; gap: 0; align-items: stretch;
+  position: relative;
+}
+
+.playbook-panel {
+  flex: 1; padding: 28px 20px;
+  background: var(--bg-2); border: 1px solid var(--border);
+  border-radius: 16px; display: flex; flex-direction: column;
+  gap: 12px; margin-right: 12px; position: relative;
+  box-shadow: var(--shadow);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Animate only when fragment becomes visible */
+.reveal .playbook-panel.fragment {
+  opacity: 0;
+  transform: translateX(56px) scale(0.96);
+}
+.reveal .playbook-panel.fragment.visible {
+  animation: panelEnter 0.55s cubic-bezier(0.16,1,0.3,1) both;
+}
+
+.playbook-panel:last-child { margin-right: 0; }
+
+.playbook-panel:hover {
+  border-color: var(--blue); box-shadow: var(--shadow-blue);
+  transform: translateY(-4px);
+}
+
+.panel-num {
+  font-family: var(--font-mono); font-size: 64px; font-weight: 900;
+  color: var(--blue); line-height: 1; opacity: 0.18; margin-bottom: -4px;
+}
+
+.panel-emoji { font-size: 36px; }
+
+.panel-title { font-size: 19px; font-weight: 800; color: var(--text); line-height: 1.2; }
+
+.panel-desc { font-size: 14px; color: var(--muted); line-height: 1.5; flex: 1; }
+
+.panel-connector {
+  position: absolute; top: 50%; right: -18px;
+  transform: translateY(-50%); z-index: 10;
+  color: var(--blue); font-size: 20px;
+  background: var(--bg); width: 24px; height: 24px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 50%; border: 1px solid var(--blue-20);
+}
+
+/* ─── Slide 12 (NEW) — GOODBYE ───────────────────────────────── */
+.slide-goodbye {
+  background: var(--blue) !important;
+  position: relative; overflow: hidden;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center;
+}
+
+.goodbye-watermark {
+  position: absolute;
+  font-size: 600px; font-weight: 900;
+  color: rgba(255,255,255,0.05);
+  line-height: 1;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -52%) rotate(-15deg);
+  pointer-events: none; z-index: 0;
+  user-select: none;
+}
+
+.goodbye-content {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column;
+  align-items: center;
+}
+
+.goodbye-main {
+  font-size: clamp(100px, 13vw, 180px);
+  font-weight: 900; color: #fff; line-height: 0.9;
+  letter-spacing: -0.04em;
+  animation: impactReveal 0.9s cubic-bezier(0.34,1.2,0.64,1) both;
+}
+
+.goodbye-sub {
+  font-size: clamp(24px, 3vw, 44px);
+  color: rgba(255,255,255,0.85); font-weight: 600;
+  margin-top: 32px; line-height: 1.3;
+}
+
+.goodbye-handle {
+  font-family: var(--font-mono);
+  font-size: clamp(18px, 2.2vw, 32px);
+  color: #fff;
+  border: 2px solid rgba(255,255,255,0.45);
+  border-radius: 100px; padding: 12px 36px;
+  display: inline-block; margin-top: 32px;
+  animation: pulseCta 2.5s ease-in-out infinite;
+  letter-spacing: 0.05em;
+}
+
+.goodbye-dm {
+  font-size: 17px; color: rgba(255,255,255,0.55);
+  margin-top: 14px; font-family: var(--font-mono);
 }

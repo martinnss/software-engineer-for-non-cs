@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "slides-dev",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["next", "dev", "--turbopack"],
+      "cwd": "/Users/martinolivares/Desktop/UNI/slides",
+      "port": 3000
+    }
+  ]
+}
